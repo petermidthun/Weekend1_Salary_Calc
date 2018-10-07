@@ -1,9 +1,10 @@
-console.log(`js`);
+console.log(`javascript being read`);
 
-let employeeArray = [];
-let totalMonthlyCost = 0;
+let employeeArray = [];    //  Array of employees
+let totalMonthlyCost = 0;  //  Total monthly cost of employee salaries
 
 class Employee{
+    //  Constructor to use when creating employee objects to put in employeeArray
     constructor(FirstName, LastName, ID, Title, AnnualSalary){
         this.firstName=FirstName;
         this.lastName=LastName;
@@ -16,14 +17,18 @@ class Employee{
 $(document).ready(readyNow);
 
 function readyNow() {
-
+    //  Event handler for clicking on submit employee button
     $('#submitNewEmployee').on(`click`, addEmployee);
+    //  Event handler for clicking on delete employee button
     $('#tableBodyOfEmployees').on(`click`, '.deleteEmployee', deleteEmployee);
 }
 
 function addEmployee(){
+    //  Function pulls submitted employee stats from entry fields, uses them to create
+    //  a new employee object, pushes the employee object to the array, recalculates the monthly 
+    //  salary cost and refreshes the employee info and monthly salary cost  
+
     event.preventDefault();
-    console.log('Submit Button Has Been Clicked');
     let firstNameIn = $(`#FirstName`).val();
     let lastNameIn = $(`#LastName`).val();
     let ID = $(`#ID`).val();
@@ -33,36 +38,38 @@ function addEmployee(){
 //$('input').val('');
     let newEmployee = new Employee(firstNameIn, lastNameIn, ID, titleIn, annualSalaryIn);
     employeeArray.push(newEmployee);
-    console.log("employee being added, here is the new array after the push:" );
-    console.log(employeeArray);
     refreshEmployeeTable();
-    //  Update monthy cost
-    console.log("new employee is", newEmployee)
-    updateMonthlyCost(newEmployee, true);
+    updateTotalMonthlyCost(newEmployee, true);  //  True indicates to add to TotalMonthlyCost
 }
 
 
 
 function deleteEmployee(){
-    console.log("entering delete employee");
-    let htmlElementTagNumber = $(this).parent().parent().data("htmlElementTagNumber");
-    console.log(htmlElementTagNumber);
-    updateMonthlyCost(employeeArray[htmlElementTagNumber], false);
+    //  Function checks the htmlElementTagNumber of the clicked button's row on the table
+    //  which is always the associated employees index in the array and uses is to update 
+    //  totalmonthlycost, splice the associated employee out of employeeArray then refreshes
+    //  the table
+
+    let htmlElementTagNumber = $(this).parent().parent().data("htmlElementTagNumber");  //Grabbing the tag number of the delete buton's row
+    updateTotalMonthlyCost(employeeArray[htmlElementTagNumber], false);           //  false indicates to reduce TotalMonthlyCost
     employeeArray.splice(htmlElementTagNumber, 1);
-    //  This refreshes the html table to reflect the new employeeArray
     refreshEmployeeTable();
 }
 
 function refreshEmployeeTable(){
-    console.log("entering refreshEmployeeTable function");
+    //  Clears the employee table elements and then recreates the table from the 
+    //  recently updated employeeArray
+
+ 
     let tableBodyOfEmployees = $("#tableBodyOfEmployees");
-    console.log(tableBodyOfEmployees);
-    tableBodyOfEmployees.empty();
-    console.log(tableBodyOfEmployees); 
+    tableBodyOfEmployees.empty();  //  The current table is removed 
     let i=0; 
     for(let employee of employeeArray){
-        
-        tableBodyOfEmployees.append(`<tr id=` + i + `>
+        //  This loop reinserts all employees from employeeArray into the table
+        //  Each table row is ID'd with the index of it's associated employee
+        //  and a delete button is added to the last column
+
+        tableBodyOfEmployees.append(`<tr id=` + i + `>  
         <td>` + employee.firstName + `</td>
         <td>` + employee.lastName + `</td>
         <td>` + employee.ID + `</td>
@@ -70,23 +77,23 @@ function refreshEmployeeTable(){
         <td>` + employee.annualSalary + `</td>
         <td><button class="deleteEmployee">Delete Employee</button> </td>
         </tr>`);
-
-        let hashStringi = "#" + i.toString();
-        console.log(hashStringi);
-        $(hashStringi).data("htmlElementTagNumber", i);
+        
+        let hashStringi = "#" + i.toString();  // i is converted to the string '#i' due to jquery 
+        $(hashStringi).data("htmlElementTagNumber", i);     // jquery gives the new row (<tr>) a "tag number" i.
+                                                            // each <tr> element's "tag number" matches the
+                                                            // associated employee's index in employeeArray
         i++;
     }
 
 }
 
-function updateMonthlyCost(employee, boolean){
-    console.log("entering function updateMonthlyCost");
-
+function updateTotalMonthlyCost(employee, boolean){
     //  This function adds to the monthly cost when an employee is added
     //  or subtracts from the monthly cost when an employee is deleted
     //  then updates the table
-    if(boolean === true){
+    if(boolean === true){  
         if(totalMonthlyCost <= 20000 && totalMonthlyCost + employee.annualSalary/12 > 20000){
+            //  If we went over 20000 per month toggle the class to red
             $('#totalMonthlyCost').toggleClass('inTheRed');
         }
         totalMonthlyCost += employee.annualSalary/12;
@@ -94,11 +101,13 @@ function updateMonthlyCost(employee, boolean){
     }
     else if(boolean === false){
         if(totalMonthlyCost > 20000 && totalMonthlyCost - employee.annualSalary/12 <= 20000){
+            //  If we went under 20000 per month toggle the class to not red
             $('#totalMonthlyCost').toggleClass('inTheRed');
         }
         totalMonthlyCost = totalMonthlyCost - employee.annualSalary/12;
     }
-    console.log('new total monthly cost:', totalMonthlyCost);
+
+    //  Update the totalMonthlyCostElement on the website
     let totalMonthlyCostElement = $('#totalMonthlyCost');
     totalMonthlyCostElement.empty();
     totalMonthlyCostElement.append(`<p ALIGN=RIGHT>Total Monthly: ` + totalMonthlyCost + `</p>`)
