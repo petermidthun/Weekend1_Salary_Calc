@@ -1,3 +1,7 @@
+.inTheRed{
+    background-color: red;
+}
+
 #tablefooter{
     background-color: red;
 }
@@ -9,8 +13,4 @@ justify-content: right;
 
 body{
     background-color: aliceblue;
-}
-
-.yellow{
-    background-color: yellow;
 }
