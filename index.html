@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="jquery-3.3.1.min.js"></script>
+  <script src="client.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>Salary Calculator</h1></header>
+  <div>
+      <h2>Add Employee</h2>
+  </div>
+      
+  <div>
+
+    <label for="First Name">First Name:</label>
+    <input id="FirstName" type="text" placeholder="First Name" required value="test"/>
+    <label for="LastName">Last Name:</label>
+    <input id="LastName" type="text" placeholder="Last Name" required value="test"/>
+    <label for="ID">ID:</label>
+    <input id="ID" type="number" placeholder="ID" required value="10"/>
+    <label for="Title">Title:</label>
+    <input id="Title" type="text" placeholder="Title" required value="test"/>
+    <label for="AnnualSalary">Annual Salary:</label>
+    <input id="AnnualSalary" type="number" placeholder="Annual Salary" required value="12"/>
+
+  </div>
+  <div>
+        <button id="submitNewEmployee" >Submit</button>
+  </div>
+    <div>
+            <h2>Employees</h2>
+    </div>
+    <div>
+          <table style="width:100%">
+                <tr>
+                  <td>Firstname</td>
+                  <td>Lastname</td>
+                  <td>ID</td>
+                  <td>Title</td>
+                  <td>Annual Salary</td>
+                  <td>Delete Employee</td>
+                </tr>
+  
+                <tbody id="tableBodyOfEmployees">
+                </tbody>
+
+
+                <tr id="tablefooter">
+                    <td>footer type thing </td>
+                </tr>
+              </table>
+        </div>
+        <div id="totalMonthlyCost" >
+            <p ALIGN=RIGHT>Total Monthly: 0</p> 
+        </div>
+
+        <H1>END OF CODE</H1>
+
+        <tr>
+                <td id="firstNameTableElement">Nobody Yet</td>
+                <td>Smith</td> 
+                <td>50</td>
+                <td>Smith</td> 
+                <td>50</td>
+              </tr>
+
+      <form>
+          <label for="title">Title:</label>
+          <input id="title" type="text"/>
+          <label for="year">year:</label>
+          <input id="year" type="year"/>
+          <label for="dir">Dir:</label>
+          <input id="dir" type="dir"/>
+          <button id="addNewMovie">Add Movie</button>
+          
+      </form>
+      <div>
+          <ul id=movieList>
+
+          </ul>
+    </div>
+ 
+</body>
+</html>
