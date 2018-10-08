@@ -2,6 +2,7 @@ console.log(`javascript being read`);
 
 let employeeArray = [];    //  Array of employees
 let totalMonthlyCost = 0;  //  Total monthly cost of employee salaries
+let userMessage="Error message not changed";  //  Message to log if input field error
 
 class Employee{
     //  Constructor to use when creating employee objects to put in employeeArray
@@ -24,24 +25,46 @@ function readyNow() {
 }
 
 function addEmployee(){
-    //  Function pulls submitted employee stats from entry fields, uses them to create
-    //  a new employee object, pushes the employee object to the array, recalculates the monthly 
-    //  salary cost and refreshes the employee info and monthly salary cost  
-
+    //  Function pulls submitted employee stats from entry fields, checks them, clears them, 
+    //  uses them to create a new employee object, pushes the employee object to the array, 
+    //  recalculates the monthly salary cost and refreshes the employee info and monthly salary cost  
     event.preventDefault();
     let firstNameIn = $(`#FirstName`).val();
     let lastNameIn = $(`#LastName`).val();
     let ID = $(`#ID`).val();
     let titleIn = $(`#Title`).val();
     let annualSalaryIn = $(`#AnnualSalary`).val();
-    //  Empties input fields
-//$('input').val('');
+    //  Check input values for errors
+    if(!checkTextInput(firstNameIn) || !checkTextInput(lastNameIn) || !checkIDInput(ID) || !checkTextInput(titleIn) || !checkAnnualSalaryInput(annualSalaryIn)){
+        alert(userMessage);
+        return;
+    }
+
+    $('input').val('');       //  Empty input fields for next entry
+
     let newEmployee = new Employee(firstNameIn, lastNameIn, ID, titleIn, annualSalaryIn);
     employeeArray.push(newEmployee);
     refreshEmployeeTable();
     updateTotalMonthlyCost(newEmployee, true);  //  True indicates to add to TotalMonthlyCost
 }
 
+function checkTextInput(input){  //  Make sure text fields filled in
+    if(input == ""){userMessage = "Empty Text Field"; return false;}
+    return true;
+}
+function checkIDInput(input){  //  Make sure no duplicate or negative IDs and field filled
+    for(employee of employeeArray){
+        if(input === employee.ID){userMessage = "Employee ID already exists"; return false;}
+    }
+    if(input<0){userMessage = "ID cannot be negative number"; return false;}
+    if(input.length === 0){userMessage = "Employee ID not entered"; return false;}
+    return true;
+
+}function checkAnnualSalaryInput(input){  //  Make sure annual salary field is not negative and filled
+    if(input<0){userMessage = "Annual Salary cannot be negative number"; return false;}
+    if(input.length === 0){userMessage = "Annual Salary not entered"; return false;}
+    return true;
+}
 
 
 function deleteEmployee(){
@@ -59,8 +82,6 @@ function deleteEmployee(){
 function refreshEmployeeTable(){
     //  Clears the employee table elements and then recreates the table from the 
     //  recently updated employeeArray
-
- 
     let tableBodyOfEmployees = $("#tableBodyOfEmployees");
     tableBodyOfEmployees.empty();  //  The current table is removed 
     let i=0; 
@@ -82,6 +103,13 @@ function refreshEmployeeTable(){
         $(hashStringi).data("htmlElementTagNumber", i);     // jquery gives the new row (<tr>) a "tag number" i.
                                                             // each <tr> element's "tag number" matches the
                                                             // associated employee's index in employeeArray
+        
+        if( i % 2  === 0 ){
+            $(hashStringi).toggleClass('aliceblue');
+        }
+        if( i % 2  === 1 ){
+            $(hashStringi).toggleClass('white');
+        }
         i++;
     }
 
@@ -93,24 +121,32 @@ function updateTotalMonthlyCost(employee, boolean){
     //  then updates the table
     if(boolean === true){  
         if(totalMonthlyCost <= 20000 && totalMonthlyCost + employee.annualSalary/12 > 20000){
-            //  If we went over 20000 per month toggle the class to red
+            //  If we went from under 20000 per month to over 2000 per month, toggle the class to red and notify user
             $('#totalMonthlyCost').toggleClass('inTheRed');
+            alert('You have exceeded your total monthly cost');
         }
         totalMonthlyCost += employee.annualSalary/12;
+        
         
     }
     else if(boolean === false){
         if(totalMonthlyCost > 20000 && totalMonthlyCost - employee.annualSalary/12 <= 20000){
-            //  If we went under 20000 per month toggle the class to not red
+            //  If we went from over 2000 to under 20000 per month toggle the class to not red
             $('#totalMonthlyCost').toggleClass('inTheRed');
         }
         totalMonthlyCost = totalMonthlyCost - employee.annualSalary/12;
     }
 
+    //  Convert totalMonthlyCost to two decimal places
+
+    totalMonthlyCost = parseFloat(totalMonthlyCost.toFixed(2));
+    if(totalMonthlyCost<0){totalMonthlyCost = 0}
+     
     //  Update the totalMonthlyCostElement on the website
     let totalMonthlyCostElement = $('#totalMonthlyCost');
     totalMonthlyCostElement.empty();
-    totalMonthlyCostElement.append(`<p ALIGN=RIGHT>Total Monthly: ` + totalMonthlyCost + `</p>`)
+    totalMonthlyCostElement.append(`<h2 id="totalMonthlyCost" >Total Monthly: $` + totalMonthlyCost + `</p>`)
 
 }
+
 
